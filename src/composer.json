@@ -1,0 +1,14 @@
+{
+    "name": "Ratenkredit",
+    "authors": [
+        {
+            "name": "Boris Janjetovic",
+            "email": "borkan82@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }   
+}
