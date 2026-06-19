@@ -1,3 +1,18 @@
+<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$offers = [];
+$submitted  = filter_input(INPUT_GET, 'submit') !== null;
+$amount     = filter_input(INPUT_GET, 'amount', FILTER_VALIDATE_INT, [
+    'options' => ['min_range' => 1],
+]);
+
+if ($submitted && $amount !== false && $amount !== null) {
+    $ratenkredit = new RatenKredit();
+    $offers      = $ratenkredit->get($amount);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,28 +42,32 @@
     </style>
 </head>
 <body>
-
 <h2>Ratenkredit</h2>
-
-<form>
-    <input type="text" name="amount" value="<?=$_GET['amount'] ?>" placeholder="$100">
+<form method="get">
+    <input type="text" name="amount" value="<?= htmlspecialchars((string) ($_GET['amount'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="$100" required>
     <input type="submit" name="submit" value="Check" />
 </form>
-
-<?php if (isset($offers)):  ?>
-
-<table>
-    <tr>
-        <th colspan="4">Offers</th>
-    </tr>
-    <?php foreach ($offers as $provider => $offer) { ?>
-        <tr>
-            <td><?= $provider ?></td>
-            <td><?php if (($provider) == 'ing-diba') echo $offer['zinsen']; else { echo $offers[$provider]['Interest']; } ?>%</td>
-            <td><?php if ($provider == 'ing-diba') echo $offer['duration']; else { echo $offer['Terms']['Duration']; } ?> month</td>
-        </tr>
+<?php if ($submitted){ ?>
+    <?php if ($amount === null || $amount === false){ ?>
+        <p>Please enter a valid amount.</p>
+    <?php } elseif ($offers === []){ ?>
+        <p>No offers could be retrieved. Please try again later.</p>
+    <?php } else { ?>
+        <table>
+            <tr>
+                <th>Provider</th>
+                <th>Interest rate</th>
+                <th>Duration</th>
+            </tr>
+            <?php foreach ($offers as $providerKey => $offer){ ?>
+                <tr>
+                    <td><?= htmlspecialchars($providerKey, ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars(number_format($offer, 2) . '%', ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= $offer->durationMonths ?> months</td>
+                </tr>
+            <?php } ?>
+        </table>
     <?php } ?>
+<?php } ?>
 </body>
-
-<?php endif ?>
 </html>
