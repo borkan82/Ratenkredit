@@ -35,20 +35,21 @@
     <input type="submit" name="submit" value="Check" />
 </form>
 
-<?php if (isset($offers)): ?>
+<?php if (isset($offers)): // @Fixme - Just currious - Why this ends after body close ?>
 
-<table border="2">
+<table border="2"> <!--@Fixme - no .. please no - Uce classes or at least inline css -->
     <tr>
         <th colspan="4">Offers</th>
     </tr>
+    <!--@Fixme - Yes... Itteration could work, but validation is missing. If offer is empty? If values does not exist? ... -->
     <?php foreach ($offers as $provider => $offer) { ?>
     <tr>
         <td><?= $provider ?></td>
-        <td><?php if (($provider) == 'ing-diba') echo $offer['zinsen']; else { echo $offers[$provider]['Interest']; } ?>%</td>
-        <td><?php if ($provider == 'ing-diba') echo $offer['duration']; else { echo $offer['Terms']['Duration']; } ?> month</td>
+        <td><?php if (($provider) == 'ing-diba') echo $offer['zinsen']; else { echo $offers[$provider]['Interest']; } ?>%</td> <!--@Fixme - Häää - you use $offers variavle even if you do itteration thru it?? -->
+        <td><?php if ($provider == 'ing-diba') echo $offer['duration']; else { echo $offer['Terms']['Duration']; } ?> month</td><!--@Fixme - These magic strings ... doesnt belong here -->
     </tr>
     <?php } ?>
 </body>
 
-<?php endif ?>
+<?php endif ?> <!--@Fixme - no way - Put above the /body -->
 </html>
