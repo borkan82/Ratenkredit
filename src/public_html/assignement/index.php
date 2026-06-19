@@ -3,17 +3,17 @@
 class RatenKredit
 {
     public function __construct() {
-        ini_set('display_errors', 'off');
+        ini_set('display_errors', 'off'); // @Fixme No way - you can not put ini_set in constructor
     }
     public function get($providers = null)
     {
         if (!$providers) {
-            $providers = ['ing-diba','Smava',  'ba_fin'];
-        } else $providers = [$providers];
-        $r = array();
+            $providers = ['ing-diba','Smava',  'ba_fin']; // @Fixme - This needs to be defned as private variables or in newer PHP like Enums...
+        } else $providers = [$providers]; // @Fixme No comment :) .......... needs to bi inside brackets
+        $r = array(); // @Fixme - use []
 
-        $ingdiba = "https://api.jsonbin.io/v3/b/65a6e50e266cfc3fde79aa14?meta=false&amount=$_GET[amount]";
-        for ($i = 0; $i <= count($providers); $i++) {
+        $ingdiba = "https://api.jsonbin.io/v3/b/65a6e50e266cfc3fde79aa14?meta=false&amount=$_GET[amount]"; // @Fixme - Uhhh .. Place to private variable, define in constuctor, $_GET not secure, it needs escaping, what about amount ???
+        for ($i = 0; $i <= count($providers); $i++) { // @Fixme Its deprecated way of itteration
             switch ($providers[$i]) {
                 case 'ing-diba':
                     $offer = file_get_contents($ingdiba, false, stream_context_create([
