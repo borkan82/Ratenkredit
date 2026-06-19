@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Helpers\LoanOffer;
-use App\Interfaces\LoanOferClient;
+use App\Interfaces\LoanOfferClient;
 
-class IngDibaClient Implements LoanOferClient{
+class IngDibaClient Implements LoanOfferClient{
 
 }

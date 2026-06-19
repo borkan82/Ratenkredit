@@ -5,7 +5,7 @@ namespace App\Interfaces;
 
 use App\Helpers\LoanOffer;
 
-interface LoanOferClient
+interface LoanOfferClient
 {
 
 }
