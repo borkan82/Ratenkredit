@@ -44,7 +44,7 @@ if ($submitted && $amount !== false && $amount !== null) {
 <body>
 <h2>Ratenkredit</h2>
 <form method="get">
-    <input type="text" name="amount" value="<?= htmlspecialchars((string) ($_GET['amount'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="$100" required>
+    <input type="number" name="amount" min="1" step="1" value="<?= htmlspecialchars((string) ($_GET['amount'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="100" required>
     <input type="submit" name="submit" value="Check" />
 </form>
 <?php if ($submitted){ ?>
