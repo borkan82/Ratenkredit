@@ -7,5 +7,5 @@ use App\Helpers\LoanOffer;
 
 interface LoanOfferClient
 {
-
+    public function fetch(int $amount): ?LoanOffer;
 }
