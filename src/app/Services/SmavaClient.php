@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-class SmavaClient {
+use App\Helpers\LoanOffer;
+use App\Interfaces\LoanOferClient;
+
+class SmavaClient Implements LoanOferClient{
 
 }
