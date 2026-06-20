@@ -38,7 +38,7 @@ class SmavaClient Implements LoanOfferClient{
             throw new RuntimeException("Unexpected HTTP status $httpCode from loan provider.");
         }
 
-        $data = json_decode($response, true);
+        $data = json_decode($response, true)[0];
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new RuntimeException("Invalid JSON response: " . json_last_error_msg());

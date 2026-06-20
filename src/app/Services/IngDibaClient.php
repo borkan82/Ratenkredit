@@ -39,7 +39,7 @@ class IngDibaClient Implements LoanOfferClient{
         }
 
         $data = json_decode($response, true)[0];
-        var_dump($data);exit;
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new RuntimeException("Invalid JSON response: " . json_last_error_msg());
         }

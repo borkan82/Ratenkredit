@@ -76,7 +76,7 @@ if ($submitted){ ?>
             <?php foreach ($offers as $providerKey => $offer){ ?>
                 <tr>
                     <td><?= htmlspecialchars($providerKey, ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars(number_format($offer, 2) . '%', ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars(number_format($offer->interestRate, 2) . '%', ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= $offer->durationMonths ?> months</td>
                 </tr>
             <?php } ?>

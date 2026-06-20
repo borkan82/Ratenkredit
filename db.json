@@ -1,9 +1,9 @@
 {
   "posts": [
     {
-      "zinsen": 200.00,
+      "zinsen": 3.57,
       "duration": 12,
-      "Interest": 300.00,
+      "Interest": 4.12,
       "Terms": {
         "Duration": 24
       }
