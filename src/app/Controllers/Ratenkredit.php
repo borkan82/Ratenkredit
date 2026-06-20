@@ -11,6 +11,7 @@ use App\Services\BaFinClient;
 
 final class Ratenkredit {
 
+    /** @var array<string, LoanOfferClient> */
     private array $clients;
 
     public function __construct()
@@ -23,10 +24,29 @@ final class Ratenkredit {
     }
 
     public function get(int $amount){
-        $values = array_map(
-            fn (LoanProvider $provider) => $provider->value,
-            LoanProvider::cases()
-        );
+
+        $offers = [];
+
+        foreach (LoanProvider::cases() as $provider) {
+            $client = $this->clients[$provider->value] ?? null;
+
+            if ($client === null) {
+                continue;
+            }
+
+            try {
+                $offer = $client->fetch($amount);
+
+                if ($offer !== null) {
+                    $offers[$provider->value] = $offer;
+                }
+            } catch (RuntimeException $e) {
+
+            }
+        }
+
+        return $offers;
+
 
 
     }

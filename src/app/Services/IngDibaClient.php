@@ -10,7 +10,7 @@ use RuntimeException;
 
 class IngDibaClient Implements LoanOfferClient{
 
-    private string $apiKey = "";
+    private string $apiKey   = '$2a$10$NH1p52EaThQFAUbsMloZ.ObhsAsdBC77RJROzFiJ7OUc52oBIn5DS';
     private string $endpoint = 'https://api.jsontest.io/v3/b/1212f324324f342344f4f';
 
     public function fetch(int $amount): ?LoanOffer {
