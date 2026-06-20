@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Helpers\LoanOffer;
+use App\Helpers\LoanProvider;
 use App\Interfaces\LoanOfferClient;
+use RuntimeException;
 
 class SmavaClient Implements LoanOfferClient{
 
@@ -16,16 +18,50 @@ class SmavaClient Implements LoanOfferClient{
         $ch = curl_init($this->endpoint);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => ["X-Access-key: {$this->apiKey}"],
+            CURLOPT_HTTPHEADER     => ["X-Access-key: $this->apiKey"],
             CURLOPT_TIMEOUT        => 5,
             CURLOPT_FAILONERROR    => false,
         ]);
 
-        try {
-            $reponse = curl_exec($ch);
+        $response = curl_exec($ch);
+        $curlError = curl_error($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-        } catch(Exception $e){
-
+        if ($response === false) {
+            throw new RuntimeException("cURL request failed: $curlError");
         }
+
+        if ($httpCode < 200 || $httpCode >= 300) {
+            throw new RuntimeException("Unexpected HTTP status $httpCode from loan provider.");
+        }
+
+        $data = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException("Invalid JSON response: " . json_last_error_msg());
+        }
+
+        if (empty($data)) {
+            return null;
+        }
+
+        if (!isset($data['Interest'], $data['Terms']['Duration'])) {
+            throw new RuntimeException("Incomplete loan offer response: missing required fields.");
+        }
+
+        if (!is_numeric($data['Interest']) || $data['Interest'] < 0) {
+            throw new RuntimeException("Invalid interestRate value: {$data['Interest']}");
+        }
+
+        if (!is_int($data['Terms']['Duration']) || $data['Terms']['Duration'] <= 0) {
+            throw new RuntimeException("Invalid durationMonths value: {$data['Terms']['Duration']}");
+        }
+
+        return new LoanOffer(
+            provider:       LoanProvider::Smava,
+            interestRate:   (float) $data['Interest'],
+            durationMonths: (int)   $data['Terms']['Duration']
+        );
     }
 }

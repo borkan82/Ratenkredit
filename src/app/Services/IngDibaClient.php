@@ -18,7 +18,7 @@ class IngDibaClient Implements LoanOfferClient{
         $ch = curl_init($this->endpoint);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => ["X-Access-key: {$this->apiKey}"],
+            CURLOPT_HTTPHEADER     => ["X-Access-key: $this->apiKey"],
             CURLOPT_TIMEOUT        => 5,
             CURLOPT_FAILONERROR    => false,
         ]);
@@ -29,11 +29,11 @@ class IngDibaClient Implements LoanOfferClient{
         curl_close($ch);
 
         if ($response === false) {
-            throw new RuntimeException("cURL request failed: {$curlError}");
+            throw new RuntimeException("cURL request failed: $curlError");
         }
 
         if ($httpCode < 200 || $httpCode >= 300) {
-            throw new RuntimeException("Unexpected HTTP status {$httpCode} from loan provider.");
+            throw new RuntimeException("Unexpected HTTP status $httpCode from loan provider.");
         }
 
         $data = json_decode($response, true);
@@ -46,12 +46,12 @@ class IngDibaClient Implements LoanOfferClient{
             return null;
         }
 
-        if (!isset($data['zinsen'], $data['duration'], $data['provider'])) {
+        if (!isset($data['zinsen'], $data['duration'])) {
             throw new RuntimeException("Incomplete loan offer response: missing required fields.");
         }
 
         if (!is_numeric($data['zinsen']) || $data['zinsen'] < 0) {
-            throw new RuntimeException("Invalid interestRate value: {$data['interestRate']}");
+            throw new RuntimeException("Invalid interestRate value: {$data['zinsen']}");
         }
 
         if (!is_int($data['duration']) || $data['duration'] <= 0) {
@@ -61,7 +61,7 @@ class IngDibaClient Implements LoanOfferClient{
         return new LoanOffer(
             provider:       LoanProvider::IngDiba,
             interestRate:   (float) $data['zinsen'],
-            durationMonths: (int)   $data['duration']
+            durationMonths: $data['duration']
         );
     }
 }

@@ -15,7 +15,7 @@ final class LoanOffer
     public function __construct(
         public LoanProvider $provider,
         public float $interestRate,
-        public int $durationMonths,
+        public int $durationMonths
     ) {
     }
 }
