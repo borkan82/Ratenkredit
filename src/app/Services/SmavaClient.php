@@ -13,7 +13,19 @@ class SmavaClient Implements LoanOfferClient{
 
     public function fetch(int $amount): ?LoanOffer {
 
-        return null;
-    }
+        $ch = curl_init($this->endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ["X-Access-key: {$this->apiKey}"],
+            CURLOPT_TIMEOUT        => 5,
+            CURLOPT_FAILONERROR    => false,
+        ]);
 
+        try {
+            $reponse = curl_exec($ch);
+
+        } catch(Exception $e){
+
+        }
+    }
 }

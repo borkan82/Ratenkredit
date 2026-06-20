@@ -5,6 +5,8 @@ namespace App\Services;
 
 use App\Helpers\LoanOffer;
 use App\Interfaces\LoanOfferClient;
+use App\Helpers\LoanProvider;
+use RuntimeException;
 
 class IngDibaClient Implements LoanOfferClient{
 
@@ -13,7 +15,53 @@ class IngDibaClient Implements LoanOfferClient{
 
     public function fetch(int $amount): ?LoanOffer {
 
-        return null;
-    }
+        $ch = curl_init($this->endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ["X-Access-key: {$this->apiKey}"],
+            CURLOPT_TIMEOUT        => 5,
+            CURLOPT_FAILONERROR    => false,
+        ]);
 
+        $response = curl_exec($ch);
+        $curlError = curl_error($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false) {
+            throw new RuntimeException("cURL request failed: {$curlError}");
+        }
+
+        if ($httpCode < 200 || $httpCode >= 300) {
+            throw new RuntimeException("Unexpected HTTP status {$httpCode} from loan provider.");
+        }
+
+        $data = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException("Invalid JSON response: " . json_last_error_msg());
+        }
+
+        if (empty($data)) {
+            return null;
+        }
+
+        if (!isset($data['zinsen'], $data['duration'], $data['provider'])) {
+            throw new RuntimeException("Incomplete loan offer response: missing required fields.");
+        }
+
+        if (!is_numeric($data['zinsen']) || $data['zinsen'] < 0) {
+            throw new RuntimeException("Invalid interestRate value: {$data['interestRate']}");
+        }
+
+        if (!is_int($data['duration']) || $data['duration'] <= 0) {
+            throw new RuntimeException("Invalid durationMonths value: {$data['duration']}");
+        }
+
+        return new LoanOffer(
+            provider:       LoanProvider::IngDiba,
+            interestRate:   (float) $data['zinsen'],
+            durationMonths: (int)   $data['duration']
+        );
+    }
 }
