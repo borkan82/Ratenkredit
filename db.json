@@ -3,7 +3,7 @@
     {
       "zinsen": 200.00,
       "duration": 12,
-      "interests": 300.00,
+      "Interest": 300.00,
       "Terms": {
         "Duration": 24
       }
