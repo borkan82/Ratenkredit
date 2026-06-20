@@ -3,19 +3,21 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\Ratenkredit;
 
-$offers = [];
-$submitted  = filter_input(INPUT_GET, 'submit') !== null;
-$amount     = filter_input(INPUT_GET, 'amount', FILTER_VALIDATE_INT, [
+$offers    = [];
+$submitted = filter_input(INPUT_GET, 'submit') !== NULL;
+$amount    = filter_input(INPUT_GET, 'amount', FILTER_VALIDATE_INT, [
     'options' => ['min_range' => 1],
 ]);
 
-if ($submitted && $amount !== false && $amount !== null) {
-    $errorMessage = null;
+// If form is submitted - Run all API requests to show table with data
+if($submitted && $amount !== false && $amount !== NULL) {
+    $errorMessage = NULL;
 
     try {
+        // 1. Try to get the data
         $ratenkredit = new RatenKredit();
         $offers      = $ratenkredit->get($amount);
-    } catch (RuntimeException $e) {
+    } catch(RuntimeException $e) {
         // 2. Catch the exception and grab its message
         $errorMessage = $e->getMessage();
     }

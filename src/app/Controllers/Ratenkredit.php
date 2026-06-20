@@ -14,41 +14,44 @@ final class Ratenkredit {
     /** @var array<string, LoanOfferClient> $clients */
     private array $clients;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->clients = [
             LoanProvider::IngDiba->value => new IngDibaClient(),
-            LoanProvider::Smava->value => new SmavaClient(),
-            LoanProvider::BaFin->value => new BaFinClient(),
+            LoanProvider::Smava->value   => new SmavaClient(),
+            LoanProvider::BaFin->value   => new BaFinClient(),
         ];
     }
 
-    public function get(int $amount){
+    /**
+     * Final function to get all data from available providers
+     *
+     * @param int $amount
+     *
+     * @return array
+     */
+    public function get(int $amount) {
 
         $offers = [];
 
-        foreach (LoanProvider::cases() as $provider) {
-            $client = $this->clients[$provider->value] ?? null;
+        foreach(LoanProvider::cases() as $provider) {
+            $client = $this->clients[$provider->value] ?? NULL;
 
-            if ($client === null) {
+            if($client === NULL) {
                 continue;
             }
 
             try {
                 $offer = $client->fetch($amount);
 
-                if ($offer !== null) {
+                if($offer !== NULL) {
                     $offers[$provider->value] = $offer;
                 }
-            } catch (RuntimeException $e) {
-
+            } catch(RuntimeException $e) {
+                // Do nothing here for now
             }
         }
 
         return $offers;
-
-
-
     }
 
 }
