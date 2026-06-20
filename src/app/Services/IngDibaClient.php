@@ -10,8 +10,10 @@ use RuntimeException;
 
 class IngDibaClient Implements LoanOfferClient{
 
-    private string $apiKey   = '$2a$10$NH1p52EaThQFAUbsMloZ.ObhsAsdBC77RJROzFiJ7OUc52oBIn5DS';
-    private string $endpoint = 'https://api.jsontest.io/v3/b/1212f324324f342344f4f';
+    private string $apiKey   = '';
+    private string $endpoint = 'https://my-json-server.typicode.com/borkan82/Ratenkredit/posts';
+//    private string $apiKey   = '$2a$10$NH1p52EaThQFAUbsMloZ.ObhsAsdBC77RJROzFiJ7OUc52oBIn5DS';
+//    private string $endpoint = 'https://api.jsontest.io/v3/b/1212f324324f342344f4f';
 
     public function fetch(int $amount): ?LoanOffer {
 
@@ -36,7 +38,7 @@ class IngDibaClient Implements LoanOfferClient{
             throw new RuntimeException("Unexpected HTTP status $httpCode from loan provider.");
         }
 
-        $data = json_decode($response, true);
+        $data = json_decode($response, true)[0];
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new RuntimeException("Invalid JSON response: " . json_last_error_msg());
@@ -54,14 +56,16 @@ class IngDibaClient Implements LoanOfferClient{
             throw new RuntimeException("Invalid interestRate value: {$data['zinsen']}");
         }
 
-        if (!is_int($data['duration']) || $data['duration'] <= 0) {
-            throw new RuntimeException("Invalid durationMonths value: {$data['duration']}");
+        $durationMonth = (int) $data['duration'];
+
+        if (!is_int($durationMonth) || $durationMonth <= 0) {
+            throw new RuntimeException("Invalid durationMonths value: {$durationMonth}");
         }
 
         return new LoanOffer(
             provider:       LoanProvider::IngDiba,
             interestRate:   (float) $data['zinsen'],
-            durationMonths: $data['duration']
+            durationMonths: $durationMonth
         );
     }
 }
