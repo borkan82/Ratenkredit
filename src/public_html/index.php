@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use App\Controllers\Ratenkredit;
+
 $offers = [];
 $submitted  = filter_input(INPUT_GET, 'submit') !== null;
 $amount     = filter_input(INPUT_GET, 'amount', FILTER_VALIDATE_INT, [
