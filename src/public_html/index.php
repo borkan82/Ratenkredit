@@ -10,8 +10,15 @@ $amount     = filter_input(INPUT_GET, 'amount', FILTER_VALIDATE_INT, [
 ]);
 
 if ($submitted && $amount !== false && $amount !== null) {
-    $ratenkredit = new RatenKredit();
-    $offers      = $ratenkredit->get($amount);
+    $errorMessage = null;
+
+    try {
+        $ratenkredit = new RatenKredit();
+        $offers      = $ratenkredit->get($amount);
+    } catch (RuntimeException $e) {
+        // 2. Catch the exception and grab its message
+        $errorMessage = $e->getMessage();
+    }
 }
 
 ?>
@@ -49,7 +56,12 @@ if ($submitted && $amount !== false && $amount !== null) {
     <input type="number" name="amount" min="1" step="1" value="<?= htmlspecialchars((string) ($_GET['amount'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="100" required>
     <input type="submit" name="submit" value="Check" />
 </form>
-<?php if ($submitted){ ?>
+<?php
+if (!empty($errorMessage)){
+    echo "<p>$errorMessage</p>";
+}
+
+if ($submitted){ ?>
     <?php if ($amount === null || $amount === false){ ?>
         <p>Please enter a valid amount.</p>
     <?php } elseif ($offers === []){ ?>

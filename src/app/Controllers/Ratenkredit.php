@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Helpers\LoanOffer;
 use App\Helpers\LoanProvider;
 use App\Services\IngDibaClient;
 use App\Services\SmavaClient;
 use App\Services\BaFinClient;
+use App\Interfaces\LoanOfferClient;
 
 final class Ratenkredit {
 
-    /** @var array<string, LoanOfferClient> */
+    /** @var array<string, LoanOfferClient> $clients */
     private array $clients;
 
     public function __construct()
