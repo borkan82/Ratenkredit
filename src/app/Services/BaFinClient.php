@@ -8,4 +8,11 @@ use App\Interfaces\LoanOfferClient;
 
 class BaFinClient Implements LoanOfferClient{
 
+    private string $apiKey   = "";
+    private string $endpoint = "";
+
+    public function fetch(int $amount): ?LoanOffer {
+        return null;
+    }
+
 }

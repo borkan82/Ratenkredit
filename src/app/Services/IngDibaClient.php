@@ -8,4 +8,12 @@ use App\Interfaces\LoanOfferClient;
 
 class IngDibaClient Implements LoanOfferClient{
 
+    private string $apiKey = "";
+    private string $endpoint = 'https://api.jsontest.io/v3/b/1212f324324f342344f4f';
+
+    public function fetch(int $amount): ?LoanOffer {
+
+        return null;
+    }
+
 }

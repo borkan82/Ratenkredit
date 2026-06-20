@@ -12,14 +12,12 @@ use App\Services\BaFinClient;
 final class Ratenkredit {
 
     private array $clients;
-    private string $ingDibaApiKey = "";
-    private string $smavaApiKey = "";
 
     public function __construct()
     {
         $this->clients = [
-            LoanProvider::IngDiba->value => new IngDibaClient($ingDibaApiKey),
-            LoanProvider::Smava->value => new SmavaClient($smavaApiKey),
+            LoanProvider::IngDiba->value => new IngDibaClient(),
+            LoanProvider::Smava->value => new SmavaClient(),
             LoanProvider::BaFin->value => new BaFinClient(),
         ];
     }
